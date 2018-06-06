@@ -1,6 +1,7 @@
 import React from 'react'
 
 import enhance from './enhance'
+import { GET_SOMETHING } from './gql'
 import {
   Foo
 } from './styled'

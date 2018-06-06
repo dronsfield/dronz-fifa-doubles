@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 
-export const allMatchesQuery = gql`
+export const GET_ALL_MATCHES = gql`
   query {
     allMatches {
       id

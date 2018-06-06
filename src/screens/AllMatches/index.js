@@ -2,14 +2,14 @@ import React from 'react'
 import { Query } from 'react-apollo'
 
 import enhance from './enhance'
-import { allMatchesQuery } from './gql'
+import { GET_ALL_MATCHES } from './gql'
 import {
   Foo
 } from './styled'
 
 const AllMatches = props => {
   return (
-    <Query query={allMatchesQuery}>
+    <Query query={GET_ALL_MATCHES}>
       {({ loading, error, data }) => {
         if (loading) return <div>Loading...</div>
         if (error) return <div>Error :(</div>
