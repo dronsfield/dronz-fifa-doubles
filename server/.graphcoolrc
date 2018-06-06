@@ -1,0 +1,3 @@
+targets:
+  default: prod
+  prod: shared-eu-west-1/cji3dr8th4tox0191volfuh45

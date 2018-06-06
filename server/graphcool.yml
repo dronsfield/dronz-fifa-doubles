@@ -1,0 +1,7 @@
+types: ./types.graphql
+permissions:
+  - operation: Match.read
+  - operation: Match.create
+    authenticated: true
+  - operation: User.read
+rootTokens: []

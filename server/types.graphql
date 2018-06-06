@@ -1,0 +1,38 @@
+type File @model {
+  contentType: String!
+  createdAt: DateTime!
+  id: ID! @isUnique
+  name: String!
+  secret: String! @isUnique
+  size: Int!
+  updatedAt: DateTime!
+  url: String! @isUnique
+}
+
+type League @model {
+  id: ID! @isUnique
+  name: String!
+}
+
+type Match @model {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  homePlayer1: User! @relation(name: "MatchOnUser")
+  homePlayer2: User! @relation(name: "MatchOnUser1")
+  awayPlayer1: User! @relation(name: "MatchOnUser2")
+  awayPlayer2: User! @relation(name: "MatchOnUser3")
+  homeScore: Int!
+  awayScore: Int!
+}
+
+type User @model {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  updatedAt: DateTime!
+  homeMatches1: [Match!]! @relation(name: "MatchOnUser")
+  homeMatches2: [Match!]! @relation(name: "MatchOnUser1")
+  awayMatches1: [Match!]! @relation(name: "MatchOnUser2")
+  awayMatches2: [Match!]! @relation(name: "MatchOnUser3")
+  bitmojiId: String
+  name: String!
+}
