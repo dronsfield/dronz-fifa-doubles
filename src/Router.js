@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import AllMatches from './screens/AllMatches'
 import Root from './screens/Root'
-import Login from './screens/Login'
+import Login from './screens/Auth/Login'
 
 export default () => (
   <Router>
