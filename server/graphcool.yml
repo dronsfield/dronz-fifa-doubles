@@ -6,7 +6,7 @@ permissions:
   - operation: User.read
 rootTokens: []
 
-# added by email-password template: (please uncomment)
+# added by email-password template:
 functions:
   signup:
     type: resolver

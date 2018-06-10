@@ -1,6 +1,7 @@
 import React from 'react'
 import gql from 'graphql-tag'
 
+import { setAuthToken } from '../../services/auth'
 import MutationForm from '../../components/MutationForm'
 
 //gql-------------------------------------
@@ -23,7 +24,7 @@ const LOGIN = gql`
 
 //enhance---------------------------------
 
-//component-----------------------------------
+//component-------------------------------
 
 const inputs = [
   { type: 'text', name: 'email', required: true },
@@ -32,7 +33,9 @@ const inputs = [
 ]
 
 const onCompleted = data => {
-  window.alert(data.authenticateUser.token)
+  const token = data.authenticateUser.token
+  setAuthToken(token)
+  window.alert(token)
 }
 
 const Login = () => {
