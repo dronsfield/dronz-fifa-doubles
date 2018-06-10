@@ -23,6 +23,7 @@ type Match @model {
   awayPlayer2: User! @relation(name: "MatchOnUser3")
   homeScore: Int!
   awayScore: Int!
+  dummy: String
 }
 
 type User @model {

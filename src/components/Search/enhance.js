@@ -33,14 +33,16 @@ export default compose(
       console.log(item)
     },
     items: [],
-    limit: 10
+    limit: 10,
+    hideListOnSubmit: true,
+    noResultsMessage: 'No results.'
   }),
   withState('query', 'setQuery', ''),
   withState('listVisible', 'setListVisible', false),
   withState('selectedItem', 'setSelectedItem', 0),
   withPropsOnChange(
-    ['query', 'items', 'searchableKeys'],
-    ({ query, items, searchableKeys }) => {
+    ['query', 'items', 'searchableKeys', 'noResultsMessage'],
+    ({ query, items, searchableKeys, noResultsMessage }) => {
       const matchingItems = (
         items
         .map(item => {
@@ -59,23 +61,44 @@ export default compose(
         .map(_.get('item'))
       )
 
-      return { matchingItems }
+      if (query && !matchingItems.length) {
+        matchingItems [{ __noResults: true }]
+      }
+
+      const results = (
+        query && !matchingItems.length
+        ? [ { __noResults: noResultsMessage } ]
+        : matchingItems
+      )
+
+      return { results }
     }
   ),
+  withHandlers({
+    onSubmit: ({ onSubmit, setListVisible, hideListOnSubmit, setQuery, displayKey }) => item => {
+      if (hideListOnSubmit) {
+        setListVisible(false)
+      }
+      if (!item || !item.__noResults) {
+        setQuery(_.get(displayKey)(item))
+        onSubmit(item)
+      }
+    }
+  }),
   withHandlers({
     onChange: ({ setQuery, setListVisible }) => e => {
       setQuery(e.target.value)
       setListVisible(true)
     },
-    onKeyPress: ({ onSubmit, matchingItems }) => e => {
+    onKeyPress: ({ onSubmit, results }) => e => {
       if (e.key === 'Enter') {
-        onSubmit(matchingItems[0])
+        onSubmit(results[0])
       }
     },
-    // onBlur: ({ setListVisible }) => e => {
-    //   console.log(e.target, e.relatedTarget)
-    //   setListVisible(false)
-    // },
+    onBlur: ({ setListVisible }) => e => {
+      // console.log(e.target, e.relatedTarget)
+      // setListVisible(false)
+    },
     onFocus: ({ setListVisible }) => () => {
       setListVisible(true)
     }

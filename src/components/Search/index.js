@@ -17,10 +17,10 @@ const Search = props => {
     onFocus,
     onKeyPress,
     onBlur,
-    matchingItems,
+    results,
     listVisible,
     limit
-    } = props
+  } = props
   return (
     <Container
       onBlur={onBlur}
@@ -35,7 +35,7 @@ const Search = props => {
         listVisible && query
         ? <List>
           {
-            matchingItems.slice(0, limit).map((item, i) => (
+            results.slice(0, limit).map((item, i) => (
               <ListItem
                 key={i}
                 item={item}

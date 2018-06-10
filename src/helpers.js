@@ -1,3 +1,5 @@
+import { compose, withState, withHandlers } from 'recompose'
+
 export const getFormData = (...args) => {
   let [e, validate, onInvalid] = args
   if (!validate) validate = x => !!x
@@ -25,3 +27,49 @@ export const getFormData = (...args) => {
 
   return variables
 }
+
+export const capitalizeFirst = str => {
+  return str.slice(0, 1).toUpperCase() + str.slice(1)
+}
+
+const getSetterName = (propName) => {
+  return `set${capitalizeFirst(propName)}`
+}
+
+export const withStateEz = (propName) => {
+  return withState(propName, getSetterName(propName), '')
+}
+
+export const withStateForInput = (propName) => {
+  return compose(
+    withStateEz(propName),
+    withHandlers({
+      [`onChange${capitalizeFirst(propName)}`]: props => e => {
+        const setter = props[getSetterName(propName)]
+        setter(e.target.value)
+      }
+    })
+  )
+}
+
+export const withStateForInputs = (propNames) => {
+  return compose(
+    ...propNames.map(withStateForInput)
+  )
+}
+
+const getMutationString = (...varNames) => {
+  return `
+    mutation (
+${varNames.map(varName => `      $${varName}: String!`).join('\n')}
+    ) {
+      someMutation(
+${varNames.map(varName => `        ${varName}: $${varName}`).join('\n')}
+      ) {
+        
+      }
+    }
+  `
+}
+
+window.getMutationString = getMutationString

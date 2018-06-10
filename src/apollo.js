@@ -1,4 +1,5 @@
 import ApolloClient from 'apollo-client'
+import { ApolloLink } from 'apollo-link'
 import { createHttpLink } from 'apollo-link-http'
 import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
@@ -9,20 +10,28 @@ const httpLink = createHttpLink({
   uri: 'https://api.graph.cool/simple/v1/cji3dr8th4tox0191volfuh45'
 })
 
-const authLink = setContext((_, { headers }) => {
+const authLink = (operation, forward) => {
   const authToken = getAuthToken()
-  return {
-    headers: {
-      ...headers,
-      Authorization: authToken ? `Bearer ${authToken}` : ''
-    }
-  }
-})
 
-const combinedLink = httpLink.concat(authLink)
+  operation.setContext(context => ({
+    ...context,
+    headers: {
+      ...context.headers,
+      Authorization: authToken ? `Bearer ${authToken}` : '',
+      Foo: 'Bar'
+    }
+  }))
+  
+  return forward(operation)
+}
+
+const link = ApolloLink.from([
+  authLink,
+  httpLink
+])
 
 const client = new ApolloClient({
-  link: combinedLink,
+  link,
   cache: new InMemoryCache()
 })
 

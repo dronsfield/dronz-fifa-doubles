@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 const Container = styled.div`
   position: relative;
+  z-index: 0;
   width: 20em;
 `
 
@@ -15,6 +16,7 @@ const Input = styled.input`
 
 const List = styled.div`
   position: absolute;
+  z-index: 1;
   top: 100%;
   left: 0;
   right: 0;

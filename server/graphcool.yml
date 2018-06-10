@@ -1,9 +1,25 @@
 types: ./types.graphql
 permissions:
   - operation: Match.read
+    authenticated: true
   - operation: Match.create
     authenticated: true
+  - operation: Match.update
+    authenticated: true
   - operation: User.read
+    authenticated: true
+  - operation: User.create
+    authenticated: true
+  - operation: User.update
+    authenticated: true
+  - operation: MatchOnUser.connect
+    authenticated: true
+  - operation: MatchOnUser1.connect
+    authenticated: true
+  - operation: MatchOnUser2.connect
+    authenticated: true
+  - operation: MatchOnUser3.connect
+    authenticated: true
 rootTokens: []
 
 # added by email-password template:

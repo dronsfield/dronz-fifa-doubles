@@ -8,10 +8,13 @@ import {
 
 const Comp = props => {
   const { onClick, item, displayKey } = props
+  const displayValue = (
+    item.__noResults || _.get(displayKey)(item)
+  )
   return (
     <ListItem
-      onClick={onClick}
-      children={_.get(displayKey)(item)}
+      onMouseDown={onClick}
+      children={displayValue}
     />
   )
 }
