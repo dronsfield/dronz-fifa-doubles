@@ -42,3 +42,9 @@ functions:
     handler:
       code: src/email-password/loggedInUser.ts
 
+  getTable:
+    type: resolver
+    schema: src/table.graphql
+    handler:
+      code: src/table.js
+

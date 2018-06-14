@@ -1,0 +1,7 @@
+type TablePayload {
+  rows: Json!
+}
+
+extend type Query {
+  getTable: TablePayload
+}
