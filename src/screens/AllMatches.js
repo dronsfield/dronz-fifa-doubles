@@ -2,6 +2,7 @@ import React from 'react'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 import { compose, withState, withHandlers, withPropsOnChange, pure } from 'recompose'
+import { Query } from 'react-apollo'
 
 //gql-------------------------------------
 
@@ -30,6 +31,8 @@ const GET_ALL_MATCHES = gql`
 //styled----------------------------------
 
 //enhance---------------------------------
+
+const enhance = compose()
 
 //component-------------------------------
 

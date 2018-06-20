@@ -2,8 +2,8 @@ import { compose, withState, withHandlers, withPropsOnChange, defaultProps, pure
 import _ from 'lodash/fp'
 
 const match = (query, matchable) => {
-  const q = query.toLowerCase()
-  if (q && matchable) {
+  if (query && matchable) {
+    const q = query.toLowerCase()
     if (typeof matchable === 'string') {
       const m = matchable.toLowerCase()
       if (m === q) {
@@ -16,7 +16,7 @@ const match = (query, matchable) => {
         return 0
       }
     } else if (Array.isArray(matchable)) {
-      return matchable.reduce((acc, x) => acc + match(query,x), 0)
+      return matchable.reduce((acc, x) => acc + match(query, x), 0)
     } else {
       return 0
     }

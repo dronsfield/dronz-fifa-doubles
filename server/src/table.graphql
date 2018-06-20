@@ -1,5 +1,6 @@
 type TablePayload {
   rows: Json!
+  info: Json!
 }
 
 extend type Query {
