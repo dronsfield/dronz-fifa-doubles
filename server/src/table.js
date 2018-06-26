@@ -1,8 +1,36 @@
 import { fromEvent, FunctionEvent } from 'graphcool-lib'
 import { GraphQLClient } from 'graphql-request'
-import { get } from 'lodash/fp'
+import { get, pick } from 'lodash/fp'
 
-async function getAllMatches(api) {
+function pushToKey (obj, key, item) {
+  if (obj[key] && Array.isArray(obj[key])) {
+    obj[key].push(item)
+  } else {
+    obj[key] = [item]
+  }
+}
+
+function getNum (thing) {
+  return Number(thing) || 0
+}
+
+function sumObjects (objA, objB, pickArr = null) {
+  if (pickArr) {
+    let pickedA = pick(pickArr)(objA)
+    let pickedB = pick(pickArr)(objB)
+  } else {
+    let pickedA = objA
+    let pickedB = objB
+  }
+
+  let summed = {}
+  Object.keys(pickedA).forEach(key => {
+    summed[key] = getNum(pickedA[key]) + getNum(pickedB[key])
+  })
+  return summed
+}
+
+async function getAllMatches (api) {
   const query = `
   query {
     allMatches {
@@ -31,7 +59,7 @@ async function getAllMatches(api) {
   return api.request(query)
 }
 
-async function getAllUsers(api) {
+async function getAllUsers (api) {
   const query = `
   query {
     allUsers {
@@ -93,10 +121,10 @@ function shapePermutationForUser (shapedMatchesForUser = []) {
   const matches = shapedMatchesForUser.length
   const averageGoalsFor = goalsFor / matches
   const averageGoalsAgainst = goalsAgainst / matches
-  const win = Number(goalsFor > goalsAgainst)
-  const draw = Number(goalsFor === goalsAgainst)
-  const loss = Number(goalsFor < goalsAgainst)
-  const points = (win * 3) + (draw * 1)
+  const wins = Number(goalsFor > goalsAgainst)
+  const draws = Number(goalsFor === goalsAgainst)
+  const losses = Number(goalsFor < goalsAgainst)
+  const points = (wins * 3) + (draws * 1)
 
   return {
     permutationId,
@@ -105,11 +133,24 @@ function shapePermutationForUser (shapedMatchesForUser = []) {
     goalsAgainst,
     averageGoalsFor,
     averageGoalsAgainst,
-    win,
-    draw,
-    loss,
+    wins,
+    draws,
+    losses,
     points
   }
+}
+
+
+
+function getUserRowFromPermutations (userPermutations) {
+  const pickArr = ['matches', 'goalsFor', 'goalsAgainst', 'wins', 'draws', 'losses', 'points']
+
+  return userPermutations.reduce((row, permutation) => {
+    return {
+      ...sumObjects(permutation, row, pickArr),
+      permutations: getNum(row.permutations) + 1
+    }
+  }, {})
 }
 
 // userId, user, matches, points, points average (per permutation), permutations, goals for, goals against, wins, losses, draws
@@ -131,14 +172,27 @@ function getTableFromMatches (matches) {
   })
 
   const table = {}
+  // const usersPermutations = {}
 
-  Object.entries(usersMatches).forEach(([userId, matches]) => {
-    const permutationsObj = matches.reduce((acc, match) => {
-      
-    }, {})
+  Object.keys(usersMatches).forEach((userId) => {
+    const userMatches = usersMatches[userId]
+    // usersPermutations[userId] = {}
+    // const userPermutations = usersPermutations[userId]
+    const userPermutationArrays = {}
+    userMatches.forEach(match => {
+      pushToKey(userPermutationArrays, match.permutationId, match)
+    })
+
+    const userPermutations = []
+    Object.keys(userPermutationArrays).forEach((permutationId) => {
+      const permutationMatches = userPermutationArrays[permutationId]
+      userPermutations.push(shapePermutationForUser(permutationMatches))
+    })
+
+    table[userId] = getUserRowFromPermutations(userPermutations)
   })
 
-  return { msg: usersMatches }
+  return { msg: { table, usersMatches } }
 }
 
 export default async (event) => {
